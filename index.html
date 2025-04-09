@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -35,6 +36,7 @@
             background-color: var(--bg-dark);
             color: var(--text-light);
             overflow: hidden;
+            /* Keep body overflow hidden */
             position: relative;
         }
 
@@ -46,6 +48,7 @@
             height: 100%;
             z-index: 0;
             opacity: 0.7;
+            /* Consider reducing opacity/particle count via JS on mobile for performance */
         }
 
         #activation-gate {
@@ -58,13 +61,16 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 2rem;
+            /* Padding removed from here, applied to .gate-content */
             box-sizing: border-box;
             background: rgba(10, 10, 15, 0.3);
             backdrop-filter: blur(5px);
+            /* Monitor performance */
             opacity: 1;
             visibility: visible;
             transition: opacity 0.8s ease-out, visibility 0s linear 0s;
+            /* Allow scrolling WITHIN the gate if content overflows height on small screens */
+            overflow-y: auto;
         }
 
         #activation-gate.hidden {
@@ -78,6 +84,7 @@
             backdrop-filter: blur(15px) saturate(180%);
             -webkit-backdrop-filter: blur(15px) saturate(180%);
             border-radius: 24px;
+            /* Default Desktop Padding */
             padding: 50px 60px;
             width: 90%;
             max-width: 720px;
@@ -87,9 +94,15 @@
             flex-direction: column;
             align-items: center;
             text-align: center;
+            /* Animation */
             transform: scale(0.95);
             opacity: 0;
             animation: gate-enter 0.8s 0.2s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+            /* Added */
+            box-sizing: border-box;
+            margin: 2rem 0;
+            /* Add some vertical margin for scroll case */
+
         }
 
         @keyframes gate-enter {
@@ -102,10 +115,12 @@
         .gate-logo-container {
             margin-bottom: 35px;
             transform: translateZ(0);
+            /* Optimization hint */
         }
 
         #gate-logo {
             width: 180px;
+            /* Default desktop width */
             height: auto;
             filter: drop-shadow(0 0 15px rgba(139, 92, 246, 0.5));
             animation: subtle-float 7s ease-in-out infinite;
@@ -125,25 +140,49 @@
             }
         }
 
+        /* Styling for the intro text container */
+        .peeragogy-intro {
+            width: 100%;
+            /* Ensure it takes available width */
+        }
+
+
+        /* Default heading styles */
         .gate-content h1 {
             font-size: 2.5rem;
             font-weight: 600;
             color: var(--text-heading);
-            margin-bottom: 1rem;
+            margin-bottom: 0.5rem;
+            /* Adjust base margin */
             letter-spacing: -0.5px;
+            line-height: 1.2;
         }
+
+        .gate-content .peeragogy-intro h1:last-of-type {
+            margin-bottom: 1rem;
+            /* Space after second H1 */
+        }
+
 
         .gate-content p {
             font-size: 1.1rem;
+            /* Default desktop size */
             line-height: 1.6;
             max-width: 550px;
+            /* Max width for readability on desktop */
+            margin-left: auto;
+            /* Center paragraph if container is wider */
+            margin-right: auto;
+            /* Center paragraph if container is wider */
             margin-bottom: 2.5rem;
             text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
         }
 
         #activate-button {
             padding: 1rem 2.5rem;
+            /* Default desktop padding */
             font-size: 1.1rem;
+            /* Default desktop font size */
             border-radius: 12px;
             cursor: pointer;
             border: none;
@@ -154,15 +193,19 @@
             transition: all 0.4s ease;
             box-shadow: 0 5px 20px rgba(59, 130, 246, 0.4);
             letter-spacing: 0.5px;
+            white-space: nowrap;
+            /* Prevent text wrapping */
         }
 
         #activate-button:hover {
+            /* Hover effect primarily for desktop */
             background-position: 100% 0;
             background: var(--button-hover-bg);
             box-shadow: 0 8px 25px rgba(139, 92, 246, 0.5);
             transform: translateY(-3px);
         }
 
+        /* Flowise Chatbot styling */
         flowise-fullchatbot {
             position: fixed;
             top: 0;
@@ -180,6 +223,91 @@
             visibility: visible;
             transition: opacity 0.8s ease-out, visibility 0s linear 0s;
         }
+
+        /* --- START RESPONSIVE STYLES --- */
+
+        /* Target tablets and smaller devices */
+        @media (max-width: 768px) {
+            .gate-content {
+                padding: 35px 25px;
+                max-width: 90%;
+                margin: 1.5rem 0;
+                /* Adjust vertical margin */
+            }
+
+            .gate-logo-container {
+                margin-bottom: 25px;
+            }
+
+            #gate-logo {
+                width: 140px;
+            }
+
+            .gate-content h1 {
+                font-size: 1.9rem;
+                margin-bottom: 0.6rem;
+                line-height: 1.2;
+            }
+
+            .gate-content .peeragogy-intro h1:last-of-type {
+                font-size: 1.7rem;
+                margin-bottom: 1rem;
+            }
+
+
+            .gate-content p {
+                font-size: 1rem;
+                margin-bottom: 2rem;
+                max-width: 100%;
+                /* Allow paragraph to use full width */
+            }
+
+            #activate-button {
+                padding: 0.8rem 1.8rem;
+                font-size: 1rem;
+            }
+        }
+
+        /* Target smaller mobile phones */
+        @media (max-width: 480px) {
+            .gate-content {
+                padding: 30px 15px;
+                border-radius: 16px;
+                margin: 1rem 0;
+                /* Adjust vertical margin */
+            }
+
+            #gate-logo {
+                width: 110px;
+            }
+
+            .gate-content h1 {
+                font-size: 1.6rem;
+            }
+
+            .gate-content .peeragogy-intro h1:last-of-type {
+                font-size: 1.4rem;
+            }
+
+
+            .gate-content p {
+                font-size: 0.9rem;
+                margin-bottom: 1.5rem;
+                line-height: 1.5;
+                /* Improve readability for smaller text */
+            }
+
+            #activate-button {
+                padding: 0.8rem 1.5rem;
+                /* Slightly more vertical padding for easier tapping */
+                font-size: 0.95rem;
+                width: 90%;
+                /* Make button wider */
+                box-sizing: border-box;
+            }
+        }
+
+        /* --- END RESPONSIVE STYLES --- */
     </style>
 </head>
 
@@ -188,19 +316,32 @@
 
     <div id="activation-gate">
         <div class="gate-content">
+            <!-- Logo Container -->
             <div class="gate-logo-container">
                 <img src="https://raw.githubusercontent.com/FTG-003/Peeragogy_ChatBot/refs/heads/deploy-setup/assets/images/peeragogy.svg"
                     alt="Peeragogy Logo" id="gate-logo" />
-            </div>
-            <h1>Peeragogy Handbook – AI Edition</h1>
-            <p><i>“I’m PeeragogyBot: trained on 5,083 entries from the core Peeragogy text. 2,541,500 characters of
-                    distilled co-learning, ready to spark with you.”</i></p>
-            <button id="activate-button" aria-label="Activate PeeragogyBot">Start Exploration ✨</button>
-        </div>
-    </div>
+            </div> <!-- End of Logo Container -->
+
+            <!-- Intro Content -->
+            <div class="peeragogy-intro">
+                <h1>Peeragogy Handbook V3</h1>
+                <h1>AI Edition</h1>
+                <p>
+                    <i>“I’m PeeragogyBot: trained on 5,083 entries from the core Peeragogy text. 2,541,500 characters of
+                        distilled co-learning, ready to spark with you.”</i>
+                </p>
+                <button id="activate-button" class="cta-button" aria-label="Activate PeeragogyBot">
+                    Start Exploration ✨
+                </button>
+            </div> <!-- End of Intro Content -->
+
+        </div> <!-- End of gate-content -->
+    </div> <!-- End of activation-gate -->
+
 
     <flowise-fullchatbot id="peeragogy-bot"></flowise-fullchatbot>
 
+    <!-- Your existing script tag -->
     <script type="module">
         (async function () {
             const { default: Chatbot } = await import("https://cdn.jsdelivr.net/npm/flowise-embed/dist/web.js");
@@ -221,15 +362,15 @@
                         chatflowid: "d5f669ab-e063-4302-bea8-8ea55335603b",
                         apiHost: "https://peeragogybot-flowise-production-68ec.up.railway.app",
                         chatflowConfig: {},
-                        theme: {
+                        theme: { // Theme for the chatbot itself
                             chatWindow: {
                                 showTitle: true,
                                 title: "PeeragogyBot Nexus",
                                 titleAvatarSrc: "https://raw.githubusercontent.com/FTG-003/Peeragogy_ChatBot/refs/heads/deploy-setup/assets/images/avatars/peeragogybot-avatar-black.svg",
                                 welcomeMessage: "Connection complete. Co-creation mode activated!",
                                 backgroundColor: "#10121a",
-                                height: "100%",
-                                width: "100%",
+                                height: "100%", // Correct for full page
+                                width: "100%",  // Correct for full page
                                 fontSize: 16,
                                 botMessage: {
                                     backgroundColor: "#2a2f3d",
@@ -262,13 +403,14 @@
                 }
             });
 
+            // Particle animation code (remains the same)
             const canvas = document.getElementById('particle-canvas');
             if (canvas) {
                 const ctx = canvas.getContext('2d');
                 canvas.width = window.innerWidth;
                 canvas.height = window.innerHeight;
                 const particles = [];
-                const particleCount = 100;
+                const particleCount = 100; // Consider reducing this for mobile performance if needed
                 for (let i = 0; i < particleCount; i++) {
                     particles.push({
                         x: Math.random() * canvas.width,
@@ -287,10 +429,12 @@
                     particles.forEach(particle => {
                         particle.x += particle.velocity.x;
                         particle.y += particle.velocity.y;
-                        if (particle.x < 0) particle.x = canvas.width;
-                        if (particle.x > canvas.width) particle.x = 0;
-                        if (particle.y < 0) particle.y = canvas.height;
-                        if (particle.y > canvas.height) particle.y = 0;
+                        if (particle.x < 0 || particle.x > canvas.width) particle.velocity.x *= -1; // Bounce off sides
+                        if (particle.y < 0 || particle.y > canvas.height) particle.velocity.y *= -1; // Bounce off top/bottom
+                        // Keep particles within bounds slightly more robustly
+                        particle.x = Math.max(particle.radius, Math.min(canvas.width - particle.radius, particle.x));
+                        particle.y = Math.max(particle.radius, Math.min(canvas.height - particle.radius, particle.y));
+
                         ctx.beginPath();
                         ctx.arc(particle.x, particle.y, particle.radius, 0, Math.PI * 2);
                         ctx.fillStyle = particle.color;
@@ -300,11 +444,14 @@
                 window.addEventListener('resize', () => {
                     canvas.width = window.innerWidth;
                     canvas.height = window.innerHeight;
+                    // Reset particle positions on resize might be better
+                    // particles.forEach(p => { p.x = Math.random() * canvas.width; p.y = Math.random() * canvas.height; });
                 });
                 animate();
             }
         })();
     </script>
+
 </body>
 
 </html>
