@@ -4,6 +4,7 @@
 
 <head>
     <meta charset="UTF-8" />
+    <!-- Viewport tag è già corretto -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>PeeragogyBot – Nexus</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -48,7 +49,11 @@
             height: 100%;
             z-index: 0;
             opacity: 0.7;
+<<<<<<< HEAD
             /* Consider reducing opacity/particle count via JS on mobile for performance */
+=======
+             /* Considerare di ridurre l'opacità o il numero di particelle (via JS) su mobile se le performance sono basse */
+>>>>>>> e4fa31070a72a9913e814d7ca9b2d3f241f2b757
         }
 
         #activation-gate {
@@ -61,11 +66,18 @@
             display: flex;
             align-items: center;
             justify-content: center;
+<<<<<<< HEAD
             /* Padding removed from here, applied to .gate-content */
             box-sizing: border-box;
             background: rgba(10, 10, 15, 0.3);
             backdrop-filter: blur(5px);
             /* Monitor performance */
+=======
+            /* Rimosso padding globale, applicato a .gate-content */
+            box-sizing: border-box;
+            background: rgba(10, 10, 15, 0.3);
+            backdrop-filter: blur(5px); /* Monitorare performance su mobile */
+>>>>>>> e4fa31070a72a9913e814d7ca9b2d3f241f2b757
             opacity: 1;
             visibility: visible;
             transition: opacity 0.8s ease-out, visibility 0s linear 0s;
@@ -84,10 +96,14 @@
             backdrop-filter: blur(15px) saturate(180%);
             -webkit-backdrop-filter: blur(15px) saturate(180%);
             border-radius: 24px;
+<<<<<<< HEAD
             /* Default Desktop Padding */
+=======
+            /* Padding originale per Desktop */
+>>>>>>> e4fa31070a72a9913e814d7ca9b2d3f241f2b757
             padding: 50px 60px;
-            width: 90%;
-            max-width: 720px;
+            width: 90%; /* Già responsive */
+            max-width: 720px; /* Già responsive */
             box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
             border: 1px solid var(--glass-border);
             display: flex;
@@ -98,11 +114,15 @@
             transform: scale(0.95);
             opacity: 0;
             animation: gate-enter 0.8s 0.2s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+<<<<<<< HEAD
             /* Added */
             box-sizing: border-box;
             margin: 2rem 0;
             /* Add some vertical margin for scroll case */
 
+=======
+            box-sizing: border-box; /* Aggiunto per sicurezza con padding */
+>>>>>>> e4fa31070a72a9913e814d7ca9b2d3f241f2b757
         }
 
         @keyframes gate-enter {
@@ -113,31 +133,27 @@
         }
 
         .gate-logo-container {
-            margin-bottom: 35px;
+            margin-bottom: 35px; /* Potrebbe essere ridotto su mobile */
             transform: translateZ(0);
             /* Optimization hint */
         }
 
         #gate-logo {
+<<<<<<< HEAD
             width: 180px;
             /* Default desktop width */
+=======
+            width: 180px; /* Potrebbe essere ridotto su mobile */
+>>>>>>> e4fa31070a72a9913e814d7ca9b2d3f241f2b757
             height: auto;
             filter: drop-shadow(0 0 15px rgba(139, 92, 246, 0.5));
             animation: subtle-float 7s ease-in-out infinite;
         }
 
         @keyframes subtle-float {
-            0% {
-                transform: translateY(0);
-            }
-
-            50% {
-                transform: translateY(-12px) scale(1.03);
-            }
-
-            100% {
-                transform: translateY(0);
-            }
+            0% { transform: translateY(0); }
+            50% { transform: translateY(-12px) scale(1.03); }
+            100% { transform: translateY(0); }
         }
 
         /* Styling for the intro text container */
@@ -149,6 +165,7 @@
 
         /* Default heading styles */
         .gate-content h1 {
+            /* Font size originale per Desktop */
             font-size: 2.5rem;
             font-weight: 600;
             color: var(--text-heading);
@@ -165,20 +182,26 @@
 
 
         .gate-content p {
+             /* Font size originale per Desktop */
             font-size: 1.1rem;
             /* Default desktop size */
             line-height: 1.6;
             max-width: 550px;
+<<<<<<< HEAD
             /* Max width for readability on desktop */
             margin-left: auto;
             /* Center paragraph if container is wider */
             margin-right: auto;
             /* Center paragraph if container is wider */
             margin-bottom: 2.5rem;
+=======
+            margin-bottom: 2.5rem; /* Potrebbe essere ridotto su mobile */
+>>>>>>> e4fa31070a72a9913e814d7ca9b2d3f241f2b757
             text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
         }
 
         #activate-button {
+             /* Padding/Font size originale per Desktop */
             padding: 1rem 2.5rem;
             /* Default desktop padding */
             font-size: 1.1rem;
@@ -193,12 +216,19 @@
             transition: all 0.4s ease;
             box-shadow: 0 5px 20px rgba(59, 130, 246, 0.4);
             letter-spacing: 0.5px;
+<<<<<<< HEAD
             white-space: nowrap;
             /* Prevent text wrapping */
         }
 
         #activate-button:hover {
             /* Hover effect primarily for desktop */
+=======
+            white-space: nowrap; /* Impedisce al testo del bottone di andare a capo */
+        }
+
+        #activate-button:hover { /* Effetto hover meno rilevante su mobile */
+>>>>>>> e4fa31070a72a9913e814d7ca9b2d3f241f2b757
             background-position: 100% 0;
             background: var(--button-hover-bg);
             box-shadow: 0 8px 25px rgba(139, 92, 246, 0.5);
@@ -224,6 +254,7 @@
             transition: opacity 0.8s ease-out, visibility 0s linear 0s;
         }
 
+<<<<<<< HEAD
         /* --- START RESPONSIVE STYLES --- */
 
         /* Target tablets and smaller devices */
@@ -308,6 +339,60 @@
         }
 
         /* --- END RESPONSIVE STYLES --- */
+=======
+        /* --- INIZIO MODIFICHE MOBILE FRIENDLY --- */
+        @media (max-width: 768px) { /* Applica a tablet e telefoni */
+            .gate-content {
+                /* Riduci padding per schermi più piccoli */
+                padding: 30px 25px; /* Verticale | Orizzontale */
+                 max-width: 95%; /* Opzionale: permette al box di essere leggermente più largo */
+            }
+
+             .gate-logo-container {
+                margin-bottom: 25px; /* Riduci spazio sotto il logo */
+             }
+
+             #gate-logo {
+                width: 140px; /* Riduci dimensione logo */
+             }
+
+             .gate-content h1 {
+                 /* Riduci dimensione font titolo */
+                 font-size: 1.8rem; /* ~29px */
+                 margin-bottom: 0.8rem;
+             }
+
+             .gate-content p {
+                 /* Riduci leggermente dimensione font paragrafo */
+                 font-size: 1rem; /* 16px */
+                 margin-bottom: 2rem; /* Riduci spazio sotto il paragrafo */
+             }
+
+             #activate-button {
+                 /* Riduci padding e font size bottone */
+                 padding: 0.8rem 1.8rem;
+                 font-size: 1rem; /* 16px */
+             }
+        }
+
+        @media (max-width: 480px) { /* Ulteriori aggiustamenti per schermi molto piccoli */
+             .gate-content h1 {
+                 font-size: 1.6rem; /* ~25.6px */
+             }
+              .gate-content p {
+                 font-size: 0.95rem; /* ~15px */
+             }
+              #activate-button {
+                 padding: 0.7rem 1.5rem;
+                 font-size: 0.95rem;
+             }
+             #gate-logo {
+                width: 120px; /* Ancora più piccolo */
+             }
+        }
+        /* --- FINE MODIFICHE MOBILE FRIENDLY --- */
+
+>>>>>>> e4fa31070a72a9913e814d7ca9b2d3f241f2b757
     </style>
 </head>
 
@@ -344,6 +429,8 @@
     <!-- Your existing script tag -->
     <script type="module">
         (async function () {
+            // Il codice JS rimane invariato, gestisce la logica.
+            // Le modifiche sono solo nel CSS per l'aspetto.
             const { default: Chatbot } = await import("https://cdn.jsdelivr.net/npm/flowise-embed/dist/web.js");
 
             const activationGate = document.getElementById("activation-gate");
@@ -358,19 +445,29 @@
 
                 if (!isChatbotInitialized) {
                     isChatbotInitialized = true;
+                    // La configurazione di initFull rimane la stessa
                     Chatbot.initFull({
                         chatflowid: "45801d80-fbe8-4525-b4de-a95eeb72db90",
                         apiHost: "https://peeragogybot-flowise-production-68ec.up.railway.app",
                         chatflowConfig: {},
+<<<<<<< HEAD
                         theme: { // Theme for the chatbot itself
+=======
+                        theme: { // Il tema interno del chatbot rimane lo stesso
+>>>>>>> e4fa31070a72a9913e814d7ca9b2d3f241f2b757
                             chatWindow: {
                                 showTitle: true,
                                 title: "PeeragogyBot Nexus",
                                 titleAvatarSrc: "https://raw.githubusercontent.com/FTG-003/Peeragogy_ChatBot/refs/heads/deploy-setup/assets/images/avatars/peeragogybot-avatar-black.svg",
                                 welcomeMessage: "Connection complete. Co-creation mode activated!",
                                 backgroundColor: "#10121a",
+<<<<<<< HEAD
                                 height: "100%", // Correct for full page
                                 width: "100%",  // Correct for full page
+=======
+                                height: "100%", // Corretto per full page
+                                width: "100%",  // Corretto per full page
+>>>>>>> e4fa31070a72a9913e814d7ca9b2d3f241f2b757
                                 fontSize: 16,
                                 botMessage: {
                                     backgroundColor: "#2a2f3d",
@@ -379,7 +476,7 @@
                                     avatarSrc: "https://raw.githubusercontent.com/FTG-003/Peeragogy_ChatBot/refs/heads/deploy-setup/assets/images/avatars/logo.svg"
                                 },
                                 userMessage: {
-                                    backgroundColor: "var(--secondary-glow)",
+                                    backgroundColor: "var(--secondary-glow)", // Usa la variabile CSS globale
                                     textColor: "#ffffff",
                                     showAvatar: true,
                                     avatarSrc: "https://raw.githubusercontent.com/zahidkhawaja/langchain-chat-nextjs/main/public/usericon.png"
@@ -388,7 +485,7 @@
                                     placeholder: "Send a thought impulse...",
                                     backgroundColor: "#1a1d29",
                                     textColor: "#e0e0e0",
-                                    sendButtonColor: "var(--primary-glow)",
+                                    sendButtonColor: "var(--primary-glow)", // Usa la variabile CSS globale
                                     autoFocus: true
                                 },
                                 footer: {
@@ -403,6 +500,7 @@
                 }
             });
 
+<<<<<<< HEAD
             // Particle animation code (remains the same)
             const canvas = document.getElementById('particle-canvas');
             if (canvas) {
@@ -449,6 +547,55 @@
                 });
                 animate();
             }
+=======
+             // Il codice dell'animazione delle particelle rimane invariato
+             const canvas = document.getElementById('particle-canvas');
+             if (canvas) {
+                 const ctx = canvas.getContext('2d');
+                 canvas.width = window.innerWidth;
+                 canvas.height = window.innerHeight;
+                 const particles = [];
+                 // Potresti considerare di ridurre particleCount su schermi piccoli qui nel JS,
+                 // ma richiede logica aggiuntiva per rilevare la dimensione schermo.
+                 // Lasciamo 100 per ora.
+                 const particleCount = 100;
+                 for (let i = 0; i < particleCount; i++) {
+                     particles.push({
+                         x: Math.random() * canvas.width,
+                         y: Math.random() * canvas.height,
+                         radius: Math.random() * 2 + 1,
+                         color: `rgba(${Math.floor(Math.random() * 100 + 150)}, ${Math.floor(Math.random() * 100 + 150)}, ${Math.floor(Math.random() * 150 + 100)}, ${Math.random() * 0.5 + 0.3})`,
+                         velocity: {
+                             x: (Math.random() - 0.5) * 0.5,
+                             y: (Math.random() - 0.5) * 0.5
+                         }
+                     });
+                 }
+                 function animate() {
+                     requestAnimationFrame(animate);
+                     ctx.clearRect(0, 0, canvas.width, canvas.height);
+                     particles.forEach(particle => {
+                         particle.x += particle.velocity.x;
+                         particle.y += particle.velocity.y;
+                         if (particle.x < 0) particle.x = canvas.width;
+                         if (particle.x > canvas.width) particle.x = 0;
+                         if (particle.y < 0) particle.y = canvas.height;
+                         if (particle.y > canvas.height) particle.y = 0;
+                         ctx.beginPath();
+                         ctx.arc(particle.x, particle.y, particle.radius, 0, Math.PI * 2);
+                         ctx.fillStyle = particle.color;
+                         ctx.fill();
+                     });
+                 }
+                 window.addEventListener('resize', () => {
+                     canvas.width = window.innerWidth;
+                     canvas.height = window.innerHeight;
+                     // Potresti dover rigenerare le particelle o ricalcolare le posizioni qui
+                     // se il resize causa problemi visivi, ma per ora va bene.
+                 });
+                 animate();
+             }
+>>>>>>> e4fa31070a72a9913e814d7ca9b2d3f241f2b757
         })();
     </script>
 
