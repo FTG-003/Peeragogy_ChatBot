@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PeeragogyBot - AI-Powered Handbook Assistant</title>
+    <meta name="description" content="Interactive AI assistant for the Peeragogy Handbook V3">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #3b82f6;
+            --primary-dark: #2563eb;
+            --background-light: #f9fafb;
+            --text-light: #111827;
+            --glass-bg-light: rgba(255, 255, 255, 0.6);
+            --glass-border-light: rgba(0, 0, 0, 0.1);
+
+            --background-dark: #111827;
+            --text-dark: #f9fafb;
+            --glass-bg-dark: rgba(31, 41, 55, 0.6); /* Darker glass for dark mode */
+            --glass-border-dark: rgba(255, 255, 255, 0.1);
+
+            /* Default to light theme variables */
+            --background: var(--background-light);
+            --text: var(--text-light);
+            --glass-bg: var(--glass-bg-light);
+            --glass-border: var(--glass-border-light);
+        }
+
+        body.dark {
+             /* Switch to dark theme variables */
+            --background: var(--background-dark);
+            --text: var(--text-dark);
+            --glass-bg: var(--glass-bg-dark);
+            --glass-border: var(--glass-border-dark);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background-color: var(--background); /* Use theme variable */
+            color: var(--text); /* Use theme variable */
+            transition: background-color 0.3s, color 0.3s;
+            display: flex; /* Use flex to manage layout */
+            flex-direction: column; /* Stack children vertically */
+        }
+
+        .glass-panel {
+            background: var(--glass-bg); /* Use theme variable */
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px); /* Safari support */
+            border: 1px solid var(--glass-border); /* Use theme variable */
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        .theme-toggle {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            padding: 0.5rem;
+            border-radius: 50%;
+            border: none;
+            background: var(--glass-bg); /* Use theme variable */
+            backdrop-filter: blur(12px);
+             -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border); /* Use theme variable */
+            color: var(--text); /* Ensure icon color contrasts */
+            cursor: pointer;
+            z-index: 100;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        .theme-toggle:hover {
+             /* Slightly adjust hover based on theme? Or keep simple */
+            opacity: 0.8;
+        }
+
+        main {
+             flex-grow: 1; /* Allow main content to take available space */
+             display: flex; /* Use flex for centering welcome screen */
+             width: 100%;
+        }
+
+        .welcome-screen {
+            /* min-height: 100vh; Removed: body handles min-height, main handles grow */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            text-align: center;
+            width: 100%; /* Take full width of main */
+            margin: auto; /* Center horizontally if needed, though flex handles it */
+            max-width: 800px; /* Optional: constrain width */
+            box-sizing: border-box; /* Include padding in width */
+        }
+
+        .welcome-screen.hidden {
+            display: none;
+        }
+
+        .logo-container {
+            width: 400px;
+            height: 96px;
+            border-radius: 50%;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: pulse 2s infinite;
+            overflow: hidden; /* Ensure the SVG stays within the container */
+        }
+
+        .logo-container img {
+            width: 80%; /* Size the logo appropriately within the container */
+            height: 80%;
+            object-fit: contain;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.05); opacity: 0.8; }
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            color: transparent; /* Fallback */
+        }
+
+        .subtitle {
+            font-size: 1.125rem;
+            margin-bottom: 2rem;
+            max-width: 600px;
+            opacity: 0.8;
+        }
+
+        .cta-button {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 0.5rem;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity 0.3s;
+        }
+
+        .cta-button:hover {
+            opacity: 0.9;
+        }
+
+        #chatbot-container {
+            display: none; /* Initially hidden */
+            flex-grow: 1; /* Take remaining vertical space */
+            padding: 1rem;
+            margin: 1rem; /* Add margin around chat container */
+            box-sizing: border-box;
+            overflow: hidden; /* Prevent scrollbars on container itself */
+            height: calc(100vh - 4rem - 50px); /* Adjust based on footer height + margins */
+        }
+
+        #chatbot-container.visible {
+            display: block; /* Changed from flex to block for Flowise embed compatibility */
+            width: 100%;
+            height: 100%;
+        }
+
+        .coffee-button {
+            position: fixed;
+            bottom: 4rem; /* Adjusted to avoid overlap with footer */
+            right: 1rem;
+            padding: 1rem;
+            text-align: center;
+            z-index: 90; /* Below theme toggle, above footer maybe */
+        }
+
+        .coffee-button .message {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.875rem;
+            opacity: 0.8;
+            color: var(--text); /* Use theme color */
+        }
+
+        .coffee-button .button {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
+            text-decoration: none;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            transition: opacity 0.3s;
+        }
+
+        .coffee-button .button:hover {
+            opacity: 0.9;
+        }
+
+        .coffee-close {
+            position: absolute;
+            top: 0.2rem;
+            right: 0.4rem;
+            background: transparent;
+            color: var(--text); /* Use theme color */
+            border: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+            opacity: 0.6;
+        }
+        .coffee-close:hover {
+            opacity: 1;
+        }
+
+        footer {
+            /* position: fixed; bottom: 0; left: 0; right: 0; Removed: Now part of flex flow */
+            padding: 1rem;
+            background: var(--glass-bg); /* Use theme variable */
+            backdrop-filter: blur(12px);
+             -webkit-backdrop-filter: blur(12px);
+            border-top: 1px solid var(--glass-border); /* Use theme variable */
+            z-index: 95;
+            width: 100%; /* Ensure full width */
+            box-sizing: border-box;
+            margin-top: auto; /* Pushes footer to bottom in flex layout */
+            height: 50px; /* Example fixed height */
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.875rem;
+        }
+
+        .footer-content a {
+            color: inherit;
+            text-decoration: none;
+            opacity: 0.8;
+            transition: opacity 0.3s;
+        }
+
+        .footer-content a:hover {
+            opacity: 1;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+
+            .subtitle {
+                font-size: 1rem;
+            }
+
+            .footer-content {
+                flex-direction: column;
+                gap: 0.5rem;
+                text-align: center;
+            }
+             #chatbot-container {
+                 height: calc(100vh - 4rem - 70px); /* Adjust for taller footer on mobile */
+             }
+             footer {
+                 height: auto; /* Allow footer height to adjust */
+             }
+        }
+
+        .system-log {
+            font-family: monospace;
+            font-size: 0.9rem;
+            color: var(--text); /* Use theme variable */
+            opacity: 0.7;
+            margin-top: 1rem;
+        }
+        /* No need for body.dark .system-log as it uses var(--text) */
+
+    </style>
+</head>
+<body class="dark"> <!-- Set dark mode as default -->
+    <button class="theme-toggle" aria-label="Toggle theme">
+        <span class="theme-icon">☀️</span>
+    </button>
+
+    <!-- Main content area -->
+     <main>
+        <div class="welcome-screen glass-panel">
+            <div class="logo-container">
+                <img src="https://raw.githubusercontent.com/FTG-003/Peeragogy_ChatBot/refs/heads/deploy-setup/assets/images/peeragogy.svg" alt="Peeragogy Logo">
+            </div>
+
+            <h1>Peeragogy Handbook V3 – AI Edition</h1>
+            <p class="subtitle">I'm PeeragogyBot: trained on 5,083 entries from the core Peeragogy text. Ready to spark with you.</p>
+            <div class="system-log">
+            </div>
+
+            <button class="cta-button">
+                Start Exploration ✨
+            </button>
+        </div>
+
+         <!-- Chatbot will be dynamically added here -->
+        <div id="chatbot-container" class="glass-panel"></div>
+     </main>
+
+    <div class="coffee-button glass-panel">
+        <button class="coffee-close" aria-label="Close">×</button>
+        <span class="message"></span>
+        <a href="https://buymeacoffee.com/bergamohub" target="_blank" rel="noopener noreferrer" class="button">
+            Buy me a coffee ☕
+        </a>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <p>π Loop – v1.1.9</p>
+            <p>An open sketch by Fabrizio Terzi</p>
+            <a href="https://github.com/FTG-003" target="_blank" rel="noopener">GitHub</a>
+        </div>
+    </footer>
+
+    <script>
+        const body = document.body;
+        const themeToggle = document.querySelector('.theme-toggle');
+        const themeIcon = document.querySelector('.theme-icon');
+        const coffeeButton = document.querySelector('.coffee-button');
+        const coffeeClose = document.querySelector('.coffee-close');
+        const coffeeMessageElement = coffeeButton.querySelector('.message');
+        const welcomeScreen = document.querySelector('.welcome-screen');
+        const chatbotContainer = document.getElementById('chatbot-container');
+        const startButton = document.querySelector('.cta-button');
+
+        let currentTheme = 'dark'; // Default theme
+
+        // Function to apply theme
+        function applyTheme(theme) {
+            currentTheme = theme;
+            if (theme === 'dark') {
+                body.classList.add('dark');
+                themeIcon.textContent = '☀️';
+            } else {
+                body.classList.remove('dark');
+                themeIcon.textContent = '🌙';
+            }
+            localStorage.setItem('theme', theme);
+        }
+
+        // --- Event Listeners ---
+
+        // Theme Toggle
+        themeToggle.addEventListener('click', () => {
+            const newTheme = body.classList.contains('dark') ? 'light' : 'dark';
+            applyTheme(newTheme);
+        });
+
+        // Coffee Button Close
+        coffeeClose.addEventListener('click', () => {
+            coffeeButton.style.display = 'none';
+        });
+
+        // Start Button
+        startButton.addEventListener('click', () => {
+            console.log("Start Exploration clicked.");
+            welcomeScreen.classList.add('hidden');
+            chatbotContainer.classList.add('visible');
+            
+            // Create the Flowise element
+            const flowiseElement = document.createElement('flowise-fullchatbot');
+            chatbotContainer.appendChild(flowiseElement);
+            
+            // Initialize Flowise with the module import approach
+            import("https://cdn.jsdelivr.net/npm/flowise-embed/dist/web.js")
+                .then(module => {
+                    const Chatbot = module.default;
+                    Chatbot.initFull({
+                        chatflowid: "45801d80-fbe8-4525-b4de-a95eeb72db90",
+                        apiHost: "https://peeragogybot-flowise-production-68ec.up.railway.app",
+                    });
+                })
+                .catch(error => {
+                    console.error("Error loading Flowise:", error);
+                    chatbotContainer.innerHTML = "<p style='color: red; text-align: center; padding: 20px;'>Error initializing chatbot. Please refresh the page and try again.</p>";
+                });
+        });
+
+        // --- Initial Setup ---
+
+        // Set initial theme on load
+        const savedTheme = localStorage.getItem('theme') || 'dark'; // Default to dark
+        applyTheme(savedTheme);
+
+        // Set initial coffee button message
+        const messages = [
+            "Fuel the co-creation ☕",
+            "Spark a peer! 🚀",
+            "Support the handbook evolution"
+        ];
+        coffeeMessageElement.textContent = messages[Math.floor(Math.random() * messages.length)];
+    </script>
+</body>
+</html>
