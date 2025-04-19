@@ -1,40 +1,65 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PeeragogyBot - AI-Powered Handbook Assistant</title>
     <meta name="description" content="Interactive AI assistant for the Peeragogy Handbook V3">
+    <!-- Enhanced Content Security Policy -->
+    <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; connect-src https://peeragogybot-flowise-production-68ec.up.railway.app https://raw.githubusercontent.com; img-src 'self' https://raw.githubusercontent.com data:; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src https://fonts.gstatic.com; frame-src 'none'; object-src 'none'; base-uri 'self';">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        /**
+         * CSS Variables and Base Styles
+         * ------------------------------- */
         :root {
+            /* Color palette */
             --primary: #3b82f6;
             --primary-dark: #2563eb;
+            --primary-gradient: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            --secondary-gradient: linear-gradient(135deg, #10b981, #059669);
+            --coffee-gradient: linear-gradient(135deg, #f59e0b, #d97706);
+
+            /* Light theme */
             --background-light: #f9fafb;
             --text-light: #111827;
             --glass-bg-light: rgba(255, 255, 255, 0.6);
             --glass-border-light: rgba(0, 0, 0, 0.1);
 
+            /* Dark theme */
             --background-dark: #111827;
             --text-dark: #f9fafb;
-            --glass-bg-dark: rgba(31, 41, 55, 0.6); /* Darker glass for dark mode */
+            --glass-bg-dark: rgba(31, 41, 55, 0.6);
             --glass-border-dark: rgba(255, 255, 255, 0.1);
 
-            /* Default to light theme variables */
+            /* Default to light theme */
             --background: var(--background-light);
             --text: var(--text-light);
             --glass-bg: var(--glass-bg-light);
             --glass-border: var(--glass-border-light);
+
+            /* Spacing and sizing */
+            --header-height: 64px;
+            --footer-height: 50px;
+            --border-radius: 1rem;
+            --button-radius: 0.5rem;
+            --icon-size: 36px;
+            --transition-speed: 0.3s;
         }
 
+        /* Dark theme class */
         body.dark {
-             /* Switch to dark theme variables */
             --background: var(--background-dark);
             --text: var(--text-dark);
             --glass-bg: var(--glass-bg-dark);
             --glass-border: var(--glass-border-dark);
         }
 
+        /* Reset and base styles */
         * {
             margin: 0;
             padding: 0;
@@ -44,68 +69,185 @@
 
         body {
             min-height: 100vh;
-            background-color: var(--background); /* Use theme variable */
-            color: var(--text); /* Use theme variable */
-            transition: background-color 0.3s, color 0.3s;
-            display: flex; /* Use flex to manage layout */
-            flex-direction: column; /* Stack children vertically */
+            background-color: var(--background);
+            color: var(--text);
+            transition: background-color var(--transition-speed), color var(--transition-speed);
+            display: flex;
+            flex-direction: column;
         }
 
+        /* Fallbacks for browsers that don't support CSS variables */
+        @supports not (--custom: property) {
+            body {
+                background-color: #f9fafb;
+                color: #111827;
+            }
+
+            body.dark {
+                background-color: #111827;
+                color: #f9fafb;
+            }
+        }
+
+        /**
+         * Component Styles
+         * --------------- */
+        /* Glass panel effect with fallbacks */
         .glass-panel {
-            background: var(--glass-bg); /* Use theme variable */
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px); /* Safari support */
-            border: 1px solid var(--glass-border); /* Use theme variable */
-            border-radius: 1rem;
+            background: rgba(255, 255, 255, 0.8);
+            /* Fallback */
+            background: var(--glass-bg);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            /* Fallback */
+            border: 1px solid var(--glass-border);
+            border-radius: var(--border-radius);
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            transition: background-color 0.3s, border-color 0.3s;
+            transition: background-color var(--transition-speed), border-color var(--transition-speed);
+        }
+
+        @supports (backdrop-filter: blur(12px)) {
+            .glass-panel {
+                backdrop-filter: blur(12px);
+            }
+        }
+
+        @supports (-webkit-backdrop-filter: blur(12px)) {
+            .glass-panel {
+                -webkit-backdrop-filter: blur(12px);
+            }
+        }
+
+        body.dark .glass-panel {
+            background: rgba(31, 41, 55, 0.8);
+            /* Fallback */
+            border-color: rgba(255, 255, 255, 0.1);
+            /* Fallback */
+        }
+
+        /* Header styles */
+        .app-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem;
+            background: var(--glass-bg);
+            border-bottom: 1px solid var(--glass-border);
+            z-index: 95;
+            width: 100%;
+            box-sizing: border-box;
+            height: var(--header-height);
+        }
+
+        @supports (backdrop-filter: blur(12px)) {
+            .app-header {
+                backdrop-filter: blur(12px);
+            }
+        }
+
+        @supports (-webkit-backdrop-filter: blur(12px)) {
+            .app-header {
+                -webkit-backdrop-filter: blur(12px);
+            }
+        }
+
+        .header-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            position: relative;
+        }
+
+        .header-logo svg {
+            width: 32px;
+            height: 32px;
+        }
+
+        .header-logo h2 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            color: var(--primary);
+            /* Fallback */
+        }
+
+        /* Loading states for logo */
+        .header-logo.loading::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 50%;
+            animation: pulse 1.5s infinite;
+        }
+
+        .header-logo.error svg {
+            border: 2px solid #ef4444;
+        }
+
+        .logo-error {
+            color: #ef4444;
+            font-size: 0.75rem;
+            position: absolute;
+            bottom: -1.25rem;
+            left: 0;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
         .theme-toggle {
-            position: fixed;
-            top: 1rem;
-            right: 1rem;
             padding: 0.5rem;
             border-radius: 50%;
             border: none;
-            background: var(--glass-bg); /* Use theme variable */
-            backdrop-filter: blur(12px);
-             -webkit-backdrop-filter: blur(12px);
-            border: 1px solid var(--glass-border); /* Use theme variable */
-            color: var(--text); /* Ensure icon color contrasts */
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            color: var(--text);
             cursor: pointer;
-            z-index: 100;
             width: 40px;
             height: 40px;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: background-color 0.3s, border-color 0.3s;
+            transition: background-color var(--transition-speed), border-color var(--transition-speed);
         }
 
         .theme-toggle:hover {
-             /* Slightly adjust hover based on theme? Or keep simple */
             opacity: 0.8;
         }
 
-        main {
-             flex-grow: 1; /* Allow main content to take available space */
-             display: flex; /* Use flex for centering welcome screen */
-             width: 100%;
+        .theme-toggle:focus {
+            outline: 2px solid var(--primary);
+            outline-offset: 2px;
         }
 
+        /* Main content area */
+        main {
+            flex-grow: 1;
+            display: flex;
+            width: 100%;
+        }
+
+        /* Welcome screen */
         .welcome-screen {
-            /* min-height: 100vh; Removed: body handles min-height, main handles grow */
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             padding: 2rem;
             text-align: center;
-            width: 100%; /* Take full width of main */
-            margin: auto; /* Center horizontally if needed, though flex handles it */
-            max-width: 800px; /* Optional: constrain width */
-            box-sizing: border-box; /* Include padding in width */
+            width: 100%;
+            margin: auto;
+            max-width: 800px;
+            box-sizing: border-box;
         }
 
         .welcome-screen.hidden {
@@ -113,36 +255,48 @@
         }
 
         .logo-container {
-            width: 400px;
+            width: 396px;
+            /* Corrected width */
             height: 96px;
+            /* background gradient removed as image provides visuals */
             border-radius: 50%;
             margin-bottom: 2rem;
             display: flex;
             align-items: center;
             justify-content: center;
             animation: pulse 2s infinite;
-            overflow: hidden; /* Ensure the SVG stays within the container */
+            overflow: hidden;
         }
 
         .logo-container img {
-            width: 80%; /* Size the logo appropriately within the container */
+            width: 80%;
             height: 80%;
             object-fit: contain;
         }
 
         @keyframes pulse {
-            0%, 100% { transform: scale(1); opacity: 1; }
-            50% { transform: scale(1.05); opacity: 0.8; }
+
+            0%,
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+
+            50% {
+                transform: scale(1.05);
+                opacity: 0.8;
+            }
         }
 
         h1 {
             font-size: 2.5rem;
             margin-bottom: 1rem;
-            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            background: var(--primary-gradient);
             -webkit-background-clip: text;
             background-clip: text;
             -webkit-text-fill-color: transparent;
-            color: transparent; /* Fallback */
+            color: var(--primary);
+            /* Fallback */
         }
 
         .subtitle {
@@ -155,95 +309,195 @@
         .cta-button {
             padding: 0.75rem 1.5rem;
             border: none;
-            border-radius: 0.5rem;
-            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            border-radius: var(--button-radius);
+            background: var(--primary-gradient);
             color: white;
             font-weight: 600;
             cursor: pointer;
-            transition: opacity 0.3s;
+            transition: opacity var(--transition-speed);
         }
 
         .cta-button:hover {
             opacity: 0.9;
         }
 
+        .cta-button:focus {
+            outline: 2px solid var(--primary);
+            outline-offset: 2px;
+        }
+
+        /* Chatbot container */
         #chatbot-container {
-            display: none; /* Initially hidden */
-            flex-grow: 1; /* Take remaining vertical space */
+            display: none;
+            flex-grow: 1;
             padding: 1rem;
-            margin: 1rem; /* Add margin around chat container */
+            margin: 1rem;
             box-sizing: border-box;
-            overflow: hidden; /* Prevent scrollbars on container itself */
-            height: calc(100vh - 4rem - 50px); /* Adjust based on footer height + margins */
+            overflow: hidden;
+            height: calc(100vh - 2rem - var(--footer-height) - var(--header-height));
+            position: relative;
         }
 
         #chatbot-container.visible {
-            display: block; /* Changed from flex to block for Flowise embed compatibility */
+            display: block;
             width: 100%;
             height: 100%;
         }
 
-        .coffee-button {
-            position: fixed;
-            bottom: 4rem; /* Adjusted to avoid overlap with footer */
-            right: 1rem;
-            padding: 1rem;
-            text-align: center;
-            z-index: 90; /* Below theme toggle, above footer maybe */
+        /* Loading indicator */
+        .loading-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--glass-bg);
+            z-index: 10;
         }
 
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(0, 0, 0, 0.1);
+            border-radius: 50%;
+            border-top-color: var(--primary);
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Custom chat message icons */
+        .bot-icon,
+        .user-icon {
+            width: var(--icon-size);
+            height: var(--icon-size);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .bot-icon {
+            background: var(--primary-gradient);
+        }
+
+        .user-icon {
+            background: var(--secondary-gradient);
+        }
+
+        /* Custom styling for Flowise messages */
+        .message-container {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+
+        .message-icon {
+            flex-shrink: 0;
+            margin-right: 8px;
+        }
+
+        .message-content {
+            flex-grow: 1;
+            padding: 10px 14px;
+            border-radius: 8px;
+            max-width: 80%;
+        }
+
+        /* Coffee button */
+        .coffee-button {
+            position: fixed;
+            bottom: calc(var(--footer-height) + 1rem);
+            right: 1rem;
+            padding: 0.75rem;
+            text-align: center;
+            z-index: 90;
+            max-width: 200px;
+            opacity: 0.85;
+            transition: opacity 0.3s;
+        }
+
+        .coffee-button:hover {
+            opacity: 1;
+        }
+
+        /* Removed conflicting rule, keeping only display: none */
+                /* Regola per mostrare il messaggio del coffee button */
         .coffee-button .message {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-size: 0.875rem;
-            opacity: 0.8;
-            color: var(--text); /* Use theme color */
+           display: block; /* Modifica da none a block */
+           margin-bottom: 0.5rem; /* Aggiungi spazio sotto il messaggio */
+           font-size: 0.875rem; /* Imposta dimensione font */
+           opacity: 0.8; /* Leggera trasparenza */
+           color: var(--text); /* Usa il colore del testo del tema */
         }
 
         .coffee-button .button {
             display: inline-flex;
             align-items: center;
             gap: 0.5rem;
-            padding: 0.5rem 1rem;
-            background: linear-gradient(135deg, #f59e0b, #d97706);
+            padding: 0.5rem 0.75rem;
+            background: var(--coffee-gradient);
             color: white;
             text-decoration: none;
-            border-radius: 0.5rem;
+            border-radius: var(--button-radius);
             font-weight: 600;
-            transition: opacity 0.3s;
-        }
-
-        .coffee-button .button:hover {
-            opacity: 0.9;
+            font-size: 0.85rem;
+            transition: opacity var(--transition-speed);
+            white-space: nowrap;
         }
 
         .coffee-close {
             position: absolute;
-            top: 0.2rem;
-            right: 0.4rem;
-            background: transparent;
-            color: var(--text); /* Use theme color */
+            top: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.2);
+            color: white;
             border: none;
-            font-size: 1.2rem;
+            font-size: 1rem;
             cursor: pointer;
-            opacity: 0.6;
-        }
-        .coffee-close:hover {
-            opacity: 1;
+            opacity: 0.8;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
         }
 
+        .coffee-close:hover {
+            opacity: 1;
+            background: rgba(0, 0, 0, 0.4);
+        }
+
+        /* Footer */
         footer {
-            /* position: fixed; bottom: 0; left: 0; right: 0; Removed: Now part of flex flow */
             padding: 1rem;
-            background: var(--glass-bg); /* Use theme variable */
-            backdrop-filter: blur(12px);
-             -webkit-backdrop-filter: blur(12px);
-            border-top: 1px solid var(--glass-border); /* Use theme variable */
+            background: var(--glass-bg);
+            border-top: 1px solid var(--glass-border);
             z-index: 95;
-            width: 100%; /* Ensure full width */
+            width: 100%;
             box-sizing: border-box;
-            margin-top: auto; /* Pushes footer to bottom in flex layout */
-            height: 50px; /* Example fixed height */
+            margin-top: auto;
+            height: var(--footer-height);
+        }
+
+        @supports (backdrop-filter: blur(12px)) {
+            footer {
+                backdrop-filter: blur(12px);
+            }
+        }
+
+        @supports (-webkit-backdrop-filter: blur(12px)) {
+            footer {
+                -webkit-backdrop-filter: blur(12px);
+            }
         }
 
         .footer-content {
@@ -259,13 +513,109 @@
             color: inherit;
             text-decoration: none;
             opacity: 0.8;
-            transition: opacity 0.3s;
+            transition: opacity var(--transition-speed);
         }
 
         .footer-content a:hover {
             opacity: 1;
         }
 
+        /* GitHub icon styling */
+        .github-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .github-icon svg {
+            width: 24px;
+            height: 24px;
+            fill: var(--text);
+            transition: opacity var(--transition-speed);
+        }
+
+        .github-icon:hover svg {
+            opacity: 1;
+        }
+
+        /* Reset button */
+        .reset-button {
+            position: fixed;
+            bottom: calc(var(--footer-height) + 1rem);
+            left: 1rem;
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: var(--button-radius);
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            color: var(--text);
+            font-weight: 600;
+            cursor: pointer;
+            z-index: 90;
+            display: none;
+            align-items: center;
+            gap: 0.5rem;
+            transition: opacity var(--transition-speed);
+        }
+
+        .reset-button.visible {
+            display: flex;
+        }
+
+        .reset-button:hover {
+            opacity: 0.8;
+        }
+
+        .reset-button:focus {
+            outline: 2px solid var(--primary);
+            outline-offset: 2px;
+        }
+
+        /* System log */
+        .system-log {
+            font-family: monospace;
+            font-size: 0.9rem;
+            color: var(--text);
+            opacity: 0.7;
+            margin-top: 1rem;
+        }
+
+        /* Toast notification */
+        .toast {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            padding: 0.75rem 1rem;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--button-radius);
+            color: var(--text);
+            font-size: 0.875rem;
+            z-index: 100;
+            opacity: 0;
+            transform: translateY(-20px);
+            transition: opacity 0.3s, transform 0.3s;
+            max-width: 300px;
+        }
+
+        .toast.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .toast.error {
+            border-left: 4px solid #ef4444;
+        }
+
+        .toast.success {
+            border-left: 4px solid #10b981;
+        }
+
+        .toast.info {
+            border-left: 4px solid var(--primary);
+        }
+
+        /* Responsive styles */
         @media (max-width: 768px) {
             h1 {
                 font-size: 2rem;
@@ -279,55 +629,181 @@
                 flex-direction: column;
                 gap: 0.5rem;
                 text-align: center;
+                align-items: center;
             }
-             #chatbot-container {
-                 height: calc(100vh - 4rem - 70px); /* Adjust for taller footer on mobile */
-             }
-             footer {
-                 height: auto; /* Allow footer height to adjust */
-             }
+
+            #chatbot-container {
+                height: calc(100vh - 2rem - 70px - var(--header-height));
+                margin: 0.5rem;
+                padding: 0.5rem;
+            }
+
+            footer {
+                height: auto;
+                padding: 0.75rem;
+            }
+
+            .github-icon {
+                margin: 0 auto;
+            }
+
+            .github-icon svg {
+                width: 28px;
+                height: 28px;
+            }
+
+            .app-header {
+                padding: 0.75rem;
+            }
+
+            .header-logo h2 {
+                font-size: 1rem;
+            }
+
+            .header-logo svg {
+                width: 28px;
+                height: 28px;
+            }
+
+            .coffee-button,
+            .reset-button {
+                bottom: calc(70px + 0.5rem);
+            }
+
+            .coffee-button {
+                right: 0.5rem;
+                padding: 0.75rem;
+            }
+
+            .reset-button {
+                left: 0.5rem;
+                padding: 0.5rem 0.75rem;
+            }
+
+            .toast {
+                top: auto;
+                bottom: calc(70px + 0.5rem);
+                left: 50%;
+                transform: translateX(-50%) translateY(20px);
+                right: auto;
+                width: 90%;
+            }
+
+            .toast.visible {
+                transform: translateX(-50%) translateY(0);
+            }
         }
 
-        .system-log {
-            font-family: monospace;
-            font-size: 0.9rem;
-            color: var(--text); /* Use theme variable */
-            opacity: 0.7;
-            margin-top: 1rem;
+        /* Accessibility improvements */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border-width: 0;
         }
-        /* No need for body.dark .system-log as it uses var(--text) */
 
+        /* Focus styles for keyboard navigation */
+        a:focus,
+        button:focus,
+        input:focus,
+        textarea:focus {
+            outline: 2px solid var(--primary);
+            outline-offset: 2px;
+        }
+
+        /* High contrast mode adjustments */
+        @media (forced-colors: active) {
+
+            .glass-panel,
+            .app-header,
+            footer {
+                border: 1px solid CanvasText;
+            }
+
+            .bot-icon,
+            .user-icon {
+                border: 1px solid CanvasText;
+            }
+        }
     </style>
 </head>
-<body class="dark"> <!-- Set dark mode as default -->
-    <button class="theme-toggle" aria-label="Toggle theme">
-        <span class="theme-icon">☀️</span>
-    </button>
+
+<body class="dark">
+    <!-- Toast notification container -->
+    <div id="toast" class="toast" role="alert" aria-live="polite"></div>
+
+    <!-- Header with logo -->
+    <header class="app-header">
+        <div class="header-logo">
+            <!-- Restored SVG -->
+            <svg id="header-logo-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="32" height="32">
+                <!-- Default logo - can be replaced via JavaScript -->
+                <path fill="url(#header-gradient)"
+                    d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z" />
+                <defs>
+                    <linearGradient id="header-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#3b82f6" />
+                        <stop offset="100%" stop-color="#8b5cf6" />
+                    </linearGradient>
+                </defs>
+            </svg>
+            <h2>PeeragogyBot</h2>
+        </div>
+        <div class="header-actions">
+            <button class="theme-toggle" aria-label="Toggle theme" aria-pressed="true">
+                <span class="theme-icon" aria-hidden="true">☀️</span>
+            </button>
+        </div>
+    </header>
 
     <!-- Main content area -->
-     <main>
+    <main>
         <div class="welcome-screen glass-panel">
             <div class="logo-container">
-                <img src="https://raw.githubusercontent.com/FTG-003/Peeragogy_ChatBot/refs/heads/deploy-setup/assets/images/peeragogy.svg" alt="Peeragogy Logo">
+                <img src="https://raw.githubusercontent.com/FTG-003/Peeragogy_ChatBot/refs/heads/deploy-setup/assets/images/peeragogy.svg"
+                    alt="Peeragogy Logo">
             </div>
 
             <h1>Peeragogy Handbook V3 – AI Edition</h1>
-            <p class="subtitle">I'm PeeragogyBot: trained on 5,083 entries from the core Peeragogy text. Ready to spark with you.</p>
-            <div class="system-log">
-            </div>
+            <p class="subtitle">I'm PeeragogyBot: trained on 5,083 entries from the core Peeragogy text. Ready to spark
+                with you.</p>
+            <div class="system-log"></div>
 
             <button class="cta-button">
                 Start Exploration ✨
             </button>
         </div>
 
-         <!-- Chatbot will be dynamically added here -->
-        <div id="chatbot-container" class="glass-panel"></div>
-     </main>
+        <!-- Chatbot will be dynamically added here -->
+        <div id="chatbot-container" class="glass-panel">
+            <!-- Loading indicator -->
+            <div class="loading-container" id="loading-indicator">
+                <div class="loading-spinner"></div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Reset chat button -->
+    <button class="reset-button glass-panel" id="reset-button">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+            <path d="M3 3v5h5"></path>
+            <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"></path>
+            <path d="M16 21h5v-5"></path>
+        </svg>
+        Reset Chat
+    </button>
 
     <div class="coffee-button glass-panel">
-        <button class="coffee-close" aria-label="Close">×</button>
+        <button class="coffee-close" aria-label="Close coffee button">×</button>
         <span class="message"></span>
+        <!-- Corrected coffee link -->
         <a href="https://buymeacoffee.com/bergamohub" target="_blank" rel="noopener noreferrer" class="button">
             Buy me a coffee ☕
         </a>
@@ -335,89 +811,615 @@
 
     <footer>
         <div class="footer-content">
-            <p>π Loop – v1.1.9</p>
+            <p>π Nexus – v1.2.0</p>
+            <!-- Corrected footer text -->
             <p>An open sketch by Fabrizio Terzi</p>
-            <a href="https://github.com/FTG-003" target="_blank" rel="noopener">GitHub</a>
+            <!-- Corrected GitHub link and aria-label -->
+            <a href="https://github.com/FTG-003/Peeragogy_ChatBot" target="_blank" rel="noopener noreferrer" class="github-icon"
+                aria-label="GitHub - FTG-003">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true">
+                    <path
+                        d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
+                </svg>
+            </a>
         </div>
     </footer>
 
+    <!-- SVG templates for chat icons -->
+    <template id="bot-icon-template">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="white"
+            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="9"></circle>
+            <path d="M9 10h.01"></path>
+            <path d="M15 10h.01"></path>
+            <path d="M9.5 15a3.5 3.5 0 0 0 5 0"></path>
+        </svg>
+    </template>
+
+    <template id="user-icon-template">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="white"
+            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+            <circle cx="12" cy="7" r="4"></circle>
+        </svg>
+    </template>
+
     <script>
-        const body = document.body;
-        const themeToggle = document.querySelector('.theme-toggle');
-        const themeIcon = document.querySelector('.theme-icon');
-        const coffeeButton = document.querySelector('.coffee-button');
-        const coffeeClose = document.querySelector('.coffee-close');
-        const coffeeMessageElement = coffeeButton.querySelector('.message');
-        const welcomeScreen = document.querySelector('.welcome-screen');
-        const chatbotContainer = document.getElementById('chatbot-container');
-        const startButton = document.querySelector('.cta-button');
+        /**
+         * PeeragogyBot Application
+         * ------------------------
+         * A single-page chatbot interface for the Peeragogy Handbook
+         */
 
-        let currentTheme = 'dark'; // Default theme
+        // Utility functions
+        const Utils = {
+            // Check for passive event listener support
+            supportsPassiveEvents: (() => {
+                let passive = false;
+                try {
+                    const options = {
+                        get passive() { passive = true; return passive; }
+                    };
+                    window.addEventListener("test", null, options);
+                    window.removeEventListener("test", null, options);
+                } catch (e) { }
+                return passive;
+            })(),
 
-        // Function to apply theme
-        function applyTheme(theme) {
-            currentTheme = theme;
-            if (theme === 'dark') {
-                body.classList.add('dark');
-                themeIcon.textContent = '☀️';
-            } else {
-                body.classList.remove('dark');
-                themeIcon.textContent = '🌙';
+            // DOM helper functions
+            getElement: (selector) => document.querySelector(selector),
+            getAllElements: (selector) => document.querySelectorAll(selector),
+
+            // Create a toast notification
+            showToast: (message, type = 'info', duration = 3000) => {
+                const toast = document.getElementById('toast');
+                if (!toast) return; // Avoid errors if toast element is missing
+                toast.textContent = message;
+                toast.className = `toast ${type} visible`;
+
+                setTimeout(() => {
+                    toast.classList.remove('visible');
+                }, duration);
+            },
+
+            // Safely parse and sanitize SVG content
+            sanitizeSvg: (svgContent) => {
+                try {
+                    // Create a new DOMParser
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(svgContent, 'image/svg+xml');
+
+                    // Check for parsing errors
+                    const errorNode = doc.querySelector('parsererror');
+                    if (errorNode) {
+                        console.error('Error parsing SVG:', errorNode.textContent);
+                        throw new Error('Error parsing SVG');
+                    }
+
+                    // Remove potentially dangerous elements and attributes
+                    const scripts = doc.querySelectorAll('script');
+                    scripts.forEach(script => script.remove());
+
+                    // Remove event handlers
+                    const allElements = doc.querySelectorAll('*');
+                    allElements.forEach(el => {
+                        Array.from(el.attributes).forEach(attr => {
+                            if (attr.name.startsWith('on') || (attr.name === 'href' && attr.value.startsWith('javascript:'))) {
+                                el.removeAttribute(attr.name);
+                            }
+                        });
+                    });
+
+                    // Convert back to string
+                    return new XMLSerializer().serializeToString(doc.documentElement);
+                } catch (error) {
+                    console.error('SVG sanitization error:', error);
+                    return null;
+                }
+            },
+
+            // Debounce function to limit function calls
+            debounce: (func, wait) => {
+                let timeout;
+                return function executedFunction(...args) {
+                    const later = () => {
+                        clearTimeout(timeout);
+                        func(...args);
+                    };
+                    clearTimeout(timeout);
+                    timeout = setTimeout(later, wait);
+                };
             }
-            localStorage.setItem('theme', theme);
-        }
+        };
 
-        // --- Event Listeners ---
+        // Theme management
+        const ThemeManager = {
+            currentTheme: 'dark',
 
-        // Theme Toggle
-        themeToggle.addEventListener('click', () => {
-            const newTheme = body.classList.contains('dark') ? 'light' : 'dark';
-            applyTheme(newTheme);
-        });
+            init() {
+                this.themeToggle = Utils.getElement('.theme-toggle');
+                this.themeIcon = Utils.getElement('.theme-icon');
+                this.body = document.body;
 
-        // Coffee Button Close
-        coffeeClose.addEventListener('click', () => {
-            coffeeButton.style.display = 'none';
-        });
+                if (!this.themeToggle || !this.themeIcon) {
+                    console.error("Theme toggle elements not found.");
+                    return;
+                }
 
-        // Start Button
-        startButton.addEventListener('click', () => {
-            console.log("Start Exploration clicked.");
-            welcomeScreen.classList.add('hidden');
-            chatbotContainer.classList.add('visible');
-            
-            // Create the Flowise element
-            const flowiseElement = document.createElement('flowise-fullchatbot');
-            chatbotContainer.appendChild(flowiseElement);
-            
-            // Initialize Flowise with the module import approach
-            import("https://cdn.jsdelivr.net/npm/flowise-embed/dist/web.js")
-                .then(module => {
+                // Set initial theme from localStorage or default to dark
+                const savedTheme = localStorage.getItem('theme') || 'dark';
+                this.applyTheme(savedTheme);
+
+                // Add event listener for theme toggle
+                this.themeToggle.addEventListener('click', () => {
+                    const newTheme = this.body.classList.contains('dark') ? 'light' : 'dark';
+                    this.applyTheme(newTheme);
+                }, Utils.supportsPassiveEvents ? { passive: true } : false);
+            },
+
+            applyTheme(theme) {
+                this.currentTheme = theme;
+
+                if (theme === 'dark') {
+                    this.body.classList.add('dark');
+                    this.themeIcon.textContent = '☀️';
+                    this.themeToggle.setAttribute('aria-pressed', 'true');
+                } else {
+                    this.body.classList.remove('dark');
+                    this.themeIcon.textContent = '🌙';
+                    this.themeToggle.setAttribute('aria-pressed', 'false');
+                }
+
+                localStorage.setItem('theme', theme);
+
+                // Update chatbot theme if it's initialized
+                if (ChatbotManager.isInitialized) {
+                    ChatbotManager.updateTheme(theme);
+                }
+            }
+        };
+
+                // Logo management
+                    const LogoManager = {
+                        // Rimosse le proprietà initialLogoUrl e loadedLogoUrl (non più necessarie per questo scopo)
+
+                        init() {
+                            // Ottiene solo i riferimenti agli elementi.
+                            // Non carica più dinamicamente l'SVG dell'header.
+                            this.headerLogoSvg = Utils.getElement('#header-logo-svg');
+                            this.headerLogo = Utils.getElement('.header-logo');
+
+                            if (!this.headerLogoSvg || !this.headerLogo) {
+                                console.error("Header logo elements not found.");
+                                // Non c'è altro da fare qui se non troviamo gli elementi
+                                return;
+                            }
+
+                            // *** RIMOSSA LA CHIAMATA A setHeaderLogo ***
+                            // this.setHeaderLogo("..."); // <-- Questa riga è stata eliminata
+
+                            // Ora l'header userà l'SVG definito direttamente nell'HTML.
+                            // Le classi .loading, .loaded, .error non verranno aggiunte/gestite
+                            // da questo manager per il caricamento iniziale.
+                        }
+
+                        // *** RIMOSSA L'INTERA FUNZIONE setHeaderLogo ***
+                        /*
+                        async setHeaderLogo(svgUrl) {
+                            // ... Tutta la logica precedente è stata rimossa ...
+                        }
+                        */
+
+                        // Potresti mantenere la funzione 'loadSvgAndUpdate' se pensi di usarla
+                        // per caricare *altri* SVG dinamicamente in futuro, ma per rendere
+                        // i loghi indipendenti *ora*, non è necessaria.
+                    };
+
+
+        // Icon management for chat messages
+        const IconManager = {
+            init() {
+                this.botIconTemplate = Utils.getElement('#bot-icon-template');
+                this.userIconTemplate = Utils.getElement('#user-icon-template');
+                this.chatbotContainer = Utils.getElement('#chatbot-container');
+
+                if (!this.botIconTemplate || !this.userIconTemplate || !this.chatbotContainer) {
+                    console.error("Icon templates or chatbot container not found.");
+                    return;
+                }
+
+                // Check for template support
+                this.supportsTemplate = 'content' in document.createElement('template');
+                if (!this.supportsTemplate) {
+                    console.warn('Browser does not support HTML templates. Using fallback for icons.');
+                }
+
+                // Create observer for watching new messages
+                this.setupObserver();
+            },
+
+            setupObserver() {
+                // Create a mutation observer to watch for new messages
+                this.observer = new MutationObserver(mutations => {
+                    mutations.forEach(mutation => {
+                        if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
+                            // Apply icons debounced or delayed to ensure DOM is ready
+                            // Using setTimeout directly is simpler here
+                            setTimeout(() => this.applyIconsToMessages(), 100);
+                        }
+                    });
+                });
+            },
+
+            startObserving() {
+                if (!this.observer || !this.chatbotContainer) return;
+                // Start observing the chatbot container
+                this.observer.observe(this.chatbotContainer, {
+                    childList: true,
+                    subtree: true,
+                    // Observing attributes might be too noisy if Flowise updates classes frequently
+                    // attributes: true,
+                    // attributeFilter: ['class']
+                });
+
+                // Initial application of icons
+                this.applyIconsToMessages();
+
+                // Set up periodic check as a fallback (might be removable if MutationObserver is reliable)
+                // Consider removing if not strictly needed for performance
+                this.checkInterval = setInterval(() => this.applyIconsToMessages(), 1500); // Increased interval
+            },
+
+            stopObserving() {
+                if (this.observer) {
+                    this.observer.disconnect();
+                }
+                if (this.checkInterval) {
+                    clearInterval(this.checkInterval);
+                    this.checkInterval = null;
+                }
+            },
+
+            applyIconsToMessages() {
+                if (!this.botIconTemplate || !this.userIconTemplate) return;
+
+                // More specific selector targeting likely Flowise structure, adjust as needed
+                const messages = Utils.getAllElements('.chatbot-message:not(.icon-added), .user-message:not(.icon-added)');
+
+                messages.forEach(message => {
+                    // Double check it hasn't been processed concurrently
+                    if (message.classList.contains('icon-added')) return;
+
+                    try {
+                        // Determine if it's a bot or user message
+                        const isUserMessage = message.classList.contains('user-message');
+
+                        // Create icon container
+                        const iconContainer = document.createElement('div');
+                        iconContainer.className = isUserMessage ? 'user-icon message-icon' : 'bot-icon message-icon'; // Combine classes
+
+                        // Create the appropriate icon
+                        const iconTemplate = isUserMessage ? this.userIconTemplate : this.botIconTemplate;
+                        const iconContent = document.importNode(iconTemplate.content, true);
+                        iconContainer.appendChild(iconContent);
+
+                        // Find the avatar placeholder within the Flowise message structure
+                        // This selector might need adjustment based on Flowise's exact output
+                        let avatarPlaceholder = message.querySelector('.avatar-placeholder, .message-avatar, .avatar');
+
+                        if (avatarPlaceholder) {
+                            // Replace placeholder content
+                            avatarPlaceholder.innerHTML = '';
+                            avatarPlaceholder.appendChild(iconContainer);
+                        } else {
+                            // Fallback: Prepend icon if no placeholder found
+                            // This might require adjusting message layout CSS
+                            message.prepend(iconContainer);
+                            console.warn("Avatar placeholder not found, prepending icon to message:", message);
+                        }
+
+                        // Mark as processed
+                        message.classList.add('icon-added');
+                    } catch (error) {
+                        console.error('Error applying icon to message:', error, message);
+                        // Optionally mark as processed anyway to prevent repeated errors
+                        message.classList.add('icon-added', 'icon-error');
+                    }
+                });
+            }
+        };
+
+        // Chatbot management
+        const ChatbotManager = {
+            isInitialized: false,
+
+            init() {
+                this.chatbotContainer = Utils.getElement('#chatbot-container');
+                this.loadingIndicator = Utils.getElement('#loading-indicator');
+                this.resetButton = Utils.getElement('#reset-button');
+
+                if (!this.chatbotContainer || !this.loadingIndicator || !this.resetButton) {
+                    console.error("Chatbot UI elements not found.");
+                    return;
+                }
+
+                // Add event listener for reset button
+                this.resetButton.addEventListener('click', () => this.resetChat(),
+                    Utils.supportsPassiveEvents ? { passive: true } : false);
+            },
+
+            async initializeFlowise() {
+                if (!this.chatbotContainer || !this.loadingIndicator) return;
+                // Show loading indicator
+                this.loadingIndicator.style.display = 'flex';
+
+                try {
+                    // Ensure container is empty before adding
+                    this.chatbotContainer.innerHTML = ''; // Clear previous errors/content
+                    this.chatbotContainer.appendChild(this.loadingIndicator); // Re-add loading indicator
+
+                    // Create the Flowise element
+                    const flowiseElement = document.createElement('flowise-fullchatbot');
+                    // Append after loading indicator, or replace indicator later
+                    this.chatbotContainer.appendChild(flowiseElement);
+
+                    // Initialize Flowise with the module import approach
+                    const module = await import("https://cdn.jsdelivr.net/npm/flowise-embed/dist/web.js");
                     const Chatbot = module.default;
+
                     Chatbot.initFull({
                         chatflowid: "45801d80-fbe8-4525-b4de-a95eeb72db90",
                         apiHost: "https://peeragogybot-flowise-production-68ec.up.railway.app",
+                        theme: this.getThemeConfig()
                     });
-                })
-                .catch(error => {
+
+                    // Hide loading indicator
+                    this.loadingIndicator.style.display = 'none';
+
+                    // Show reset button
+                    this.resetButton.classList.add('visible');
+
+                    // Start observing for message icons
+                    IconManager.startObserving();
+
+                    // Mark as initialized
+                    this.isInitialized = true;
+
+                    // Show success message
+                    Utils.showToast('Chatbot initialized successfully', 'success');
+                } catch (error) {
                     console.error("Error loading Flowise:", error);
-                    chatbotContainer.innerHTML = "<p style='color: red; text-align: center; padding: 20px;'>Error initializing chatbot. Please refresh the page and try again.</p>";
+                    this.loadingIndicator.style.display = 'none';
+                    // Display error message within the container
+                    this.chatbotContainer.innerHTML = `
+                        <div style="color: #ef4444; text-align: center; padding: 20px; margin: auto;">
+                            <p>Error initializing chatbot. Please try refreshing the page.</p>
+                            <p style="font-size: 0.8em; margin-top: 10px;">${error.message}</p>
+                            <button id="retry-button" style="margin-top: 15px; padding: 8px 16px; background: var(--primary); color: white; border: none; border-radius: 4px; cursor: pointer;">
+                                Retry Initialization
+                            </button>
+                        </div>
+                    `;
+
+                    // Add retry button functionality
+                    const retryButton = Utils.getElement('#retry-button');
+                    if (retryButton) {
+                        retryButton.addEventListener('click', () => {
+                            // No need to manually re-add loading indicator here, initializeFlowise handles it
+                            this.initializeFlowise();
+                        }, { once: true }); // Use once to prevent multiple bindings
+                    }
+
+                    // Show error toast
+                    Utils.showToast(`Chatbot initialization failed`, 'error');
+                }
+            },
+
+            getThemeConfig() {
+                const isDark = ThemeManager.currentTheme === 'dark';
+
+                return {
+                    chatWindow: {
+                        backgroundColor: isDark ? 'var(--background-dark)' : 'var(--background-light)',
+                        textColor: isDark ? 'var(--text-dark)' : 'var(--text-light)',
+                        fontSize: '16px',
+                        // Ensure height/width are handled by the container, not Flowise theme
+                    },
+                    chatMessage: {
+                        backgroundColor: isDark ? '#1f2937' : '#ffffff', // Slightly different from main bg
+                        textColor: isDark ? 'var(--text-dark)' : 'var(--text-light)',
+                        fontSize: '16px',
+                    },
+                    userMessage: {
+                        backgroundColor: 'var(--primary)',
+                        textColor: '#ffffff',
+                        fontSize: '16px',
+                    },
+                    userInput: {
+                        backgroundColor: isDark ? '#1f2937' : '#ffffff',
+                        textColor: isDark ? 'var(--text-dark)' : 'var(--text-light)',
+                        placeholderColor: isDark ? '#9ca3af' : '#6b7280',
+                        fontSize: '16px',
+                    },
+                    // Add other theme options if needed by Flowise
+                };
+            },
+
+            updateTheme(theme) {
+                // Flowise embed doesn't support dynamic theme updates via a method.
+                // Re-initialization is the only way, but can be disruptive (clears chat).
+                console.warn("Dynamic theme update requires re-initializing the chatbot.");
+                // Optional: Implement re-initialization if essential, maybe with a warning.
+                // this.resetChat(false); // Pass flag to avoid confirmation?
+            },
+
+            resetChat(confirmReset = true) { // Add optional confirmation flag
+                if (!this.chatbotContainer || !this.resetButton) return;
+
+                const performReset = () => {
+                    // Stop observing old DOM
+                    IconManager.stopObserving();
+
+                    // Clear container (will be repopulated by initializeFlowise)
+                    this.chatbotContainer.innerHTML = '';
+                    this.isInitialized = false; // Mark as not initialized
+
+                    // Hide reset button until reinitialized
+                    this.resetButton.classList.remove('visible');
+
+                    // Reinitialize Flowise (will show loading indicator)
+                    this.initializeFlowise();
+
+                    // Show success message
+                    Utils.showToast('Chat has been reset', 'info');
+                };
+
+                if (confirmReset) {
+                    if (confirm("Are you sure you want to reset the chat? This will clear your conversation history.")) {
+                        performReset();
+                    }
+                } else {
+                    performReset(); // Reset without confirmation
+                }
+            }
+        };
+
+        // UI management
+        const UIManager = {
+            init() {
+                this.welcomeScreen = Utils.getElement('.welcome-screen');
+                this.chatbotContainer = Utils.getElement('#chatbot-container');
+                this.startButton = Utils.getElement('.cta-button');
+                this.coffeeButton = Utils.getElement('.coffee-button');
+                this.coffeeClose = Utils.getElement('.coffee-close');
+                this.coffeeMessageElement = this.coffeeButton?.querySelector('.message'); // Use optional chaining
+
+                if (!this.welcomeScreen || !this.chatbotContainer || !this.startButton || !this.coffeeButton || !this.coffeeClose) {
+                    console.error("Core UI elements not found.");
+                    return;
+                }
+
+                // Add event listeners
+                this.startButton.addEventListener('click', () => this.startChatbot(),
+                    Utils.supportsPassiveEvents ? { passive: true } : false);
+
+                // Coffee button close logic
+                this.setupCoffeeButton();
+
+                // Set initial coffee button message (if element exists)
+                if (this.coffeeMessageElement) {
+                    this.setCoffeeMessage();
+                }
+
+                // Add keyboard navigation support
+                this.setupKeyboardNavigation();
+            },
+
+            startChatbot() {
+                console.log("Start Exploration clicked.");
+                this.welcomeScreen.classList.add('hidden');
+                this.chatbotContainer.classList.add('visible');
+                // Initialize Flowise only when the button is clicked
+                if (!ChatbotManager.isInitialized) {
+                    ChatbotManager.initializeFlowise();
+                }
+            },
+
+            setCoffeeMessage() {
+                if (!this.coffeeMessageElement) return;
+                const messages = [
+                    "Fuel the co-creation ☕",
+                    "Spark a peer! 🚀",
+                    "Support the handbook evolution"
+                ];
+                // This message is hidden by CSS, but set it anyway in case CSS changes
+                this.coffeeMessageElement.textContent = messages[Math.floor(Math.random() * messages.length)];
+            },
+
+            setupCoffeeButton() {
+                const COFFEE_CLOSED_KEY = 'coffeeClosed';
+                const COFFEE_CLOSED_TIME_KEY = 'coffeeClosedTime';
+                const HIDE_DURATION = 7 * 24 * 60 * 60 * 1000; // 7 days
+
+                // Check if it should be hidden based on localStorage
+                const closedTimestamp = localStorage.getItem(COFFEE_CLOSED_TIME_KEY);
+                if (localStorage.getItem(COFFEE_CLOSED_KEY) === 'true') {
+                    if (!closedTimestamp || (Date.now() - parseInt(closedTimestamp)) < HIDE_DURATION) {
+                        this.coffeeButton.style.display = 'none';
+                    } else {
+                        // Time expired, remove flag and show button
+                        localStorage.removeItem(COFFEE_CLOSED_KEY);
+                        localStorage.removeItem(COFFEE_CLOSED_TIME_KEY);
+                        this.coffeeButton.style.display = ''; // Reset display
+                    }
+                }
+
+                // Add close listener
+                this.coffeeClose.addEventListener('click', (e) => {
+                    e.stopPropagation(); // Prevent potential parent clicks
+                    this.coffeeButton.style.display = 'none';
+                    localStorage.setItem(COFFEE_CLOSED_KEY, 'true');
+                    localStorage.setItem(COFFEE_CLOSED_TIME_KEY, Date.now().toString());
+                }, Utils.supportsPassiveEvents ? { passive: false } : false); // Passive false needed for stopPropagation? Check necessity.
+            },
+
+            setupKeyboardNavigation() {
+                // Add keyboard navigation for important elements
+                document.addEventListener('keydown', (e) => {
+                    // Escape key closes modals or resets focus
+                    if (e.key === 'Escape') {
+                        // Close coffee button if visible and not already closing
+                        if (this.coffeeButton.style.display !== 'none') {
+                            // Trigger click on close button for consistency with storage logic
+                            this.coffeeClose.click();
+                            e.preventDefault(); // Prevent other escape actions
+                        }
+                        // Add other Escape key actions if needed (e.g., close modals)
+                    }
                 });
+
+                // Ensure focus styles work (already handled by CSS)
+            }
+        };
+
+        // Main application initialization
+        document.addEventListener('DOMContentLoaded', function () {
+            // Initialize all managers
+            ThemeManager.init();
+            LogoManager.init();
+            IconManager.init(); // Init IconManager but don't start observing yet
+            ChatbotManager.init();
+            UIManager.init();
+
+            // Performance: Lazy load non-critical resources (Example, if needed)
+            // Currently no images marked for lazy loading, but keep pattern if added
+            /*
+            if ('IntersectionObserver' in window) {
+                const lazyImages = Utils.getAllElements('img[loading="lazy"]');
+                const imageObserver = new IntersectionObserver((entries, observer) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            const img = entry.target;
+                            if (img.dataset.src) {
+                                img.src = img.dataset.src;
+                                img.removeAttribute('loading'); // Optional: remove attribute
+                                observer.unobserve(img);
+                            }
+                        }
+                    });
+                });
+                lazyImages.forEach(img => imageObserver.observe(img));
+            }
+            */
+
+            // Clean up resources when page is unloaded
+            window.addEventListener('beforeunload', () => {
+                IconManager.stopObserving(); // Stop observer and interval
+            });
+
+            // Add any other post-load initializations here
         });
-
-        // --- Initial Setup ---
-
-        // Set initial theme on load
-        const savedTheme = localStorage.getItem('theme') || 'dark'; // Default to dark
-        applyTheme(savedTheme);
-
-        // Set initial coffee button message
-        const messages = [
-            "Fuel the co-creation ☕",
-            "Spark a peer! 🚀",
-            "Support the handbook evolution"
-        ];
-        coffeeMessageElement.textContent = messages[Math.floor(Math.random() * messages.length)];
     </script>
 </body>
+
 </html>
