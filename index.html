@@ -8,7 +8,7 @@
     <meta name="description" content="Interactive AI assistant for the Peeragogy Handbook V3">
     <!-- Enhanced Content Security Policy -->
     <meta http-equiv="Content-Security-Policy"
-        content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; connect-src https://peeragogybot-flowise-production-68ec.up.railway.app https://raw.githubusercontent.com; img-src 'self' https://raw.githubusercontent.com data:; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src https://fonts.gstatic.com; frame-src 'none'; object-src 'none'; base-uri 'self';">
+        content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; connect-src https://flowise.pyragogy.org ; img-src 'self' https://raw.githubusercontent.com data:; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src https://fonts.gstatic.com; frame-src 'none'; object-src 'none'; base-uri 'self';">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -539,37 +539,7 @@
         }
 
         /* Reset button */
-        .reset-button {
-            position: fixed;
-            bottom: calc(var(--footer-height) + 1rem);
-            left: 1rem;
-            padding: 0.5rem 1rem;
-            border: none;
-            border-radius: var(--button-radius);
-            background: var(--glass-bg);
-            border: 1px solid var(--glass-border);
-            color: var(--text);
-            font-weight: 600;
-            cursor: pointer;
-            z-index: 90;
-            display: none;
-            align-items: center;
-            gap: 0.5rem;
-            transition: opacity var(--transition-speed);
-        }
 
-        .reset-button.visible {
-            display: flex;
-        }
-
-        .reset-button:hover {
-            opacity: 0.8;
-        }
-
-        .reset-button:focus {
-            outline: 2px solid var(--primary);
-            outline-offset: 2px;
-        }
 
         /* System log */
         .system-log {
@@ -789,7 +759,7 @@
     </main>
 
     <!-- Reset chat button -->
-    <button class="reset-button glass-panel" id="reset-button">
+    <button class="reset-button glass-panel" id="reset-button" style="display: none;">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
@@ -811,7 +781,7 @@
 
     <footer>
         <div class="footer-content">
-            <p>π Nexus – v1.2.0</p>
+            <p>π Nexus – v1.3.0</p>
             <!-- Corrected footer text -->
             <p>An open sketch by Fabrizio Terzi</p>
             <!-- Corrected GitHub link and aria-label -->
@@ -980,40 +950,17 @@
         };
 
                 // Logo management
-                    const LogoManager = {
-                        // Rimosse le proprietà initialLogoUrl e loadedLogoUrl (non più necessarie per questo scopo)
+                const LogoManager = {
+                    init() {
+                        this.headerLogoSvg = Utils.getElement('#header-logo-svg');
+                        this.headerLogo = Utils.getElement('.header-logo');
 
-                        init() {
-                            // Ottiene solo i riferimenti agli elementi.
-                            // Non carica più dinamicamente l'SVG dell'header.
-                            this.headerLogoSvg = Utils.getElement('#header-logo-svg');
-                            this.headerLogo = Utils.getElement('.header-logo');
-
-                            if (!this.headerLogoSvg || !this.headerLogo) {
-                                console.error("Header logo elements not found.");
-                                // Non c'è altro da fare qui se non troviamo gli elementi
-                                return;
-                            }
-
-                            // *** RIMOSSA LA CHIAMATA A setHeaderLogo ***
-                            // this.setHeaderLogo("..."); // <-- Questa riga è stata eliminata
-
-                            // Ora l'header userà l'SVG definito direttamente nell'HTML.
-                            // Le classi .loading, .loaded, .error non verranno aggiunte/gestite
-                            // da questo manager per il caricamento iniziale.
+                        if (!this.headerLogoSvg || !this.headerLogo) {
+                            console.error("Header logo elements not found.");
+                            return;
                         }
-
-                        // *** RIMOSSA L'INTERA FUNZIONE setHeaderLogo ***
-                        /*
-                        async setHeaderLogo(svgUrl) {
-                            // ... Tutta la logica precedente è stata rimossa ...
-                        }
-                        */
-
-                        // Potresti mantenere la funzione 'loadSvgAndUpdate' se pensi di usarla
-                        // per caricare *altri* SVG dinamicamente in futuro, ma per rendere
-                        // i loghi indipendenti *ora*, non è necessaria.
-                    };
+                    }
+                };
 
 
         // Icon management for chat messages
@@ -1057,26 +1004,15 @@
                 this.observer.observe(this.chatbotContainer, {
                     childList: true,
                     subtree: true,
-                    // Observing attributes might be too noisy if Flowise updates classes frequently
-                    // attributes: true,
-                    // attributeFilter: ['class']
                 });
 
                 // Initial application of icons
                 this.applyIconsToMessages();
-
-                // Set up periodic check as a fallback (might be removable if MutationObserver is reliable)
-                // Consider removing if not strictly needed for performance
-                this.checkInterval = setInterval(() => this.applyIconsToMessages(), 1500); // Increased interval
             },
 
             stopObserving() {
                 if (this.observer) {
                     this.observer.disconnect();
-                }
-                if (this.checkInterval) {
-                    clearInterval(this.checkInterval);
-                    this.checkInterval = null;
                 }
             },
 
@@ -1084,15 +1020,12 @@
                 if (!this.botIconTemplate || !this.userIconTemplate) return;
 
                 // More specific selector targeting likely Flowise structure, adjust as needed
-                const messages = Utils.getAllElements('.chatbot-message:not(.icon-added), .user-message:not(.icon-added)');
+                const messages = Utils.getAllElements('.message-content:not(.icon-added)');
 
                 messages.forEach(message => {
-                    // Double check it hasn't been processed concurrently
-                    if (message.classList.contains('icon-added')) return;
-
                     try {
-                        // Determine if it's a bot or user message
-                        const isUserMessage = message.classList.contains('user-message');
+                        // Determine if it's a user or bot message based on parent structure
+                        const isUserMessage = message.closest('.user-message') !== null;
 
                         // Create icon container
                         const iconContainer = document.createElement('div');
@@ -1105,7 +1038,7 @@
 
                         // Find the avatar placeholder within the Flowise message structure
                         // This selector might need adjustment based on Flowise's exact output
-                        let avatarPlaceholder = message.querySelector('.avatar-placeholder, .message-avatar, .avatar');
+                        let avatarPlaceholder = message.closest('.message-container')?.querySelector('.avatar-placeholder, .message-avatar, .avatar');
 
                         if (avatarPlaceholder) {
                             // Replace placeholder content
@@ -1144,8 +1077,8 @@
                 }
 
                 // Add event listener for reset button
-                this.resetButton.addEventListener('click', () => this.resetChat(),
-                    Utils.supportsPassiveEvents ? { passive: true } : false);
+                // this.resetButton.addEventListener('click', () => this.resetChat(),
+                //     Utils.supportsPassiveEvents ? { passive: true } : false);
             },
 
             async initializeFlowise() {
@@ -1168,8 +1101,8 @@
                     const Chatbot = module.default;
 
                     Chatbot.initFull({
-                        chatflowid: "45801d80-fbe8-4525-b4de-a95eeb72db90",
-                        apiHost: "https://peeragogybot-flowise-production-68ec.up.railway.app",
+                        chatflowid: "588be9ca-939a-4c4d-b3c4-de606c53c37a",
+                        apiHost: "https://flowise.pyragogy.org",
                         theme: this.getThemeConfig()
                     });
 
@@ -1217,29 +1150,30 @@
 
             getThemeConfig() {
                 const isDark = ThemeManager.currentTheme === 'dark';
+                const fontSize = '16px';
 
                 return {
                     chatWindow: {
                         backgroundColor: isDark ? 'var(--background-dark)' : 'var(--background-light)',
                         textColor: isDark ? 'var(--text-dark)' : 'var(--text-light)',
-                        fontSize: '16px',
+                        fontSize: fontSize,
                         // Ensure height/width are handled by the container, not Flowise theme
                     },
                     chatMessage: {
                         backgroundColor: isDark ? '#1f2937' : '#ffffff', // Slightly different from main bg
                         textColor: isDark ? 'var(--text-dark)' : 'var(--text-light)',
-                        fontSize: '16px',
+                        fontSize: fontSize,
                     },
                     userMessage: {
                         backgroundColor: 'var(--primary)',
                         textColor: '#ffffff',
-                        fontSize: '16px',
+                        fontSize: fontSize,
                     },
                     userInput: {
                         backgroundColor: isDark ? '#1f2937' : '#ffffff',
                         textColor: isDark ? 'var(--text-dark)' : 'var(--text-light)',
                         placeholderColor: isDark ? '#9ca3af' : '#6b7280',
-                        fontSize: '16px',
+                        fontSize: fontSize,
                     },
                     // Add other theme options if needed by Flowise
                 };
@@ -1337,28 +1271,23 @@
             },
 
             setupCoffeeButton() {
-                const COFFEE_CLOSED_KEY = 'coffeeClosed';
                 const COFFEE_CLOSED_TIME_KEY = 'coffeeClosedTime';
                 const HIDE_DURATION = 7 * 24 * 60 * 60 * 1000; // 7 days
 
                 // Check if it should be hidden based on localStorage
                 const closedTimestamp = localStorage.getItem(COFFEE_CLOSED_TIME_KEY);
-                if (localStorage.getItem(COFFEE_CLOSED_KEY) === 'true') {
-                    if (!closedTimestamp || (Date.now() - parseInt(closedTimestamp)) < HIDE_DURATION) {
-                        this.coffeeButton.style.display = 'none';
-                    } else {
-                        // Time expired, remove flag and show button
-                        localStorage.removeItem(COFFEE_CLOSED_KEY);
-                        localStorage.removeItem(COFFEE_CLOSED_TIME_KEY);
-                        this.coffeeButton.style.display = ''; // Reset display
-                    }
+                if (closedTimestamp && (Date.now() - parseInt(closedTimestamp)) < HIDE_DURATION) {
+                    this.coffeeButton.style.display = 'none';
+                } else {
+                    // Time expired, show button
+                    localStorage.removeItem(COFFEE_CLOSED_TIME_KEY);
+                    this.coffeeButton.style.display = ''; // Reset display
                 }
 
                 // Add close listener
                 this.coffeeClose.addEventListener('click', (e) => {
                     e.stopPropagation(); // Prevent potential parent clicks
                     this.coffeeButton.style.display = 'none';
-                    localStorage.setItem(COFFEE_CLOSED_KEY, 'true');
                     localStorage.setItem(COFFEE_CLOSED_TIME_KEY, Date.now().toString());
                 }, Utils.supportsPassiveEvents ? { passive: false } : false); // Passive false needed for stopPropagation? Check necessity.
             },
