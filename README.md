@@ -45,7 +45,7 @@ Currently, the best way to interact with the project is:
 
 *(Detailed local setup instructions might be added later based on project evolution.)*
 
-## ✨ Join the Pyragogy Movement!
+## ✨ Join the Pyragogy !
 
 This project is more than just code; it's an invitation to explore the future of learning. Whether you're an educator, a developer, a learner, or just curious about AI and collaboration, your insights and contributions are welcome!
 
@@ -53,10 +53,16 @@ This project is more than just code; it's an invitation to explore the future of
 *   Want to improve the bot? Fork the repo and submit a [Pull Request](https://github.com/FTG-003/Peeragogy_ChatBot/pulls).
 *   Let's build the future of peer learning, together! 🤝
 
+---
+
+👉 **Try the Peeragogy ChatBot now**: [https://ftg-003.github.io/Peeragogy_ChatBot/](https://ftg-003.github.io/Peeragogy_ChatBot/)
+
+📩 **Contact us**: [info@peeragogy.org](mailto:info@peeragogy.org)
+
+
 ## 📜 License
 
 This project is licensed under the **MIT License**. See the [LICENSE](LICENSE) file for details.
 
----
-
 Let's learn and build, peer-to-peer, with a little help from our AI friend! 🚀
+
